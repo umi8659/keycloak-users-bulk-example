@@ -46,6 +46,10 @@ public class UsersBulkResource {
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     public Response createUsers(final List<UserRepresentation> reps) {
+        if (reps == null || reps.isEmpty()) {
+            return ErrorResponse.error("Request is empty", Response.Status.BAD_REQUEST);
+        }
+
         try {
             for (UserRepresentation rep : reps) {
                 Response response = checkUserRepresentation(rep);
