@@ -85,7 +85,7 @@ public class UsersBulkResource {
     }
 
     /**
-     * This code has been copied from keycloak org.keycloak.services.resources.admin.UsersResource#createUser;
+     * This code has been copied and modified from keycloak org.keycloak.services.resources.admin.UsersResource#createUser;
      * at each upgrade check that it hasn't been modified
      */
     private Response checkUserRepresentation(final UserRepresentation rep) {
@@ -97,17 +97,17 @@ public class UsersBulkResource {
             return ErrorResponse.error("User name is missing", Response.Status.BAD_REQUEST);
         }
 
-        // Double-check duplicated username and email here due to federation
+        // Check duplicated username and email here due to federation
         if (session.users().getUserByUsername(realm, username) != null) {
-            return ErrorResponse.exists("User exists with same username");
+            return ErrorResponse.exists(String.format("User exists with same username of \"%s\"", username));
         }
         if (rep.getEmail() != null && !realm.isDuplicateEmailsAllowed()) {
             try {
                 if (session.users().getUserByEmail(realm, rep.getEmail()) != null) {
-                    return ErrorResponse.exists("User exists with same email");
+                    return ErrorResponse.exists(String.format("User exists with same email of \"%s\"", rep.getEmail()));
                 }
             } catch (ModelDuplicateException e) {
-                return ErrorResponse.exists("User exists with same email");
+                return ErrorResponse.exists(String.format("User exists with same email of \"%s\"", rep.getEmail()));
             }
         }
 
